@@ -189,7 +189,7 @@ def _ios_framework_impl(ctx):
     binary_artifact = binary_target[apple_common.AppleDylibBinary].binary
 
     bundle_id = ctx.attr.bundle_id
-    dynamic = ctx.attr.dynamic
+    distributable = ctx.attr.distributable
 
     processor_partials = [
         partials.apple_bundle_info_partial(bundle_id = bundle_id),
@@ -211,11 +211,11 @@ def _ios_framework_impl(ctx):
             embeddable_targets = ctx.attr.frameworks,
         ),
         partials.extension_safe_validation_partial(is_extension_safe = ctx.attr.extension_safe),
-        None if dynamic else partials.framework_headers_partial(hdrs = ctx.files.hdrs),
+        None if distributable else partials.framework_headers_partial(hdrs = ctx.files.hdrs),
         partials.framework_provider_partial(
             binary_provider = binary_target[apple_common.AppleDylibBinary],
         ),
-        None if not dynamic else partials.framework_header_modulemap_partial(
+        None if not distributable else partials.framework_header_modulemap_partial(
             hdrs = ctx.files.hdrs,
             binary_objc_provider = binary_target[apple_common.Objc],
         ),

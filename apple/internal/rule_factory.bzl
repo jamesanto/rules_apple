@@ -516,6 +516,12 @@ If true, compiles and links this framework with `-application-extension`, restri
 use only extension-safe APIs.
 """,
             ),
+            "distributable": attr.bool(
+                default = False,
+                doc = """
+If true, it will generate module map so that it can be distributed.
+""",
+            ),
         })
     elif rule_descriptor.product_type == apple_product_type.static_framework:
         attrs.append({
