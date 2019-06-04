@@ -177,7 +177,7 @@ def _ios_application_impl(ctx):
         binary_target[apple_common.AppleExecutableBinary],
     ] + processor_result.providers
 
-def _ios_framework_impl_base(ctx, dynamic):
+def _ios_framework_impl(ctx):
     """Experimental implementation of ios_framework."""
     # TODO(kaipi): Add support for packaging headers.
 
@@ -189,6 +189,7 @@ def _ios_framework_impl_base(ctx, dynamic):
     binary_artifact = binary_target[apple_common.AppleDylibBinary].binary
 
     bundle_id = ctx.attr.bundle_id
+    dynamic = ctx.attr.dynamic
 
     processor_partials = [
         partials.apple_bundle_info_partial(bundle_id = bundle_id),
@@ -238,12 +239,6 @@ def _ios_framework_impl_base(ctx, dynamic):
         DefaultInfo(files = processor_result.output_files),
         IosFrameworkBundleInfo(),
     ] + processor_result.providers
-
-def _ios_framework_impl(ctx):
-    return _ios_framework_impl_base(ctx=ctx, dynamic=False)
-
-def _ios_dynamic_framework_impl(ctx):
-    return _ios_framework_impl_base(ctx=ctx, dynamic=True)
 
 def _ios_extension_impl(ctx):
     """Experimental implementation of ios_extension."""
@@ -536,13 +531,6 @@ ios_framework = rule_factory.create_apple_bundling_rule(
     platform_type = "ios",
     product_type = apple_product_type.framework,
     doc = "Builds and bundles an iOS Dynamic Framework.",
-)
-
-ios_dynamic_framework = rule_factory.create_apple_bundling_rule(
-    implementation = _ios_dynamic_framework_impl,
-    platform_type = "ios",
-    product_type = apple_product_type.framework,
-    doc = "Builds and bundles a distributable iOS Dynamic Framework.",
 )
 
 ios_static_framework = rule_factory.create_apple_bundling_rule(
