@@ -80,7 +80,7 @@ load(
 )
 load(
     "@build_bazel_rules_apple//apple/internal/partials:static_framework_header_modulemap.bzl",
-    _static_framework_header_modulemap_partial = "static_framework_header_modulemap_partial",
+    _framework_header_modulemap_partial = "framework_header_modulemap_partial",
 )
 load(
     "@build_bazel_rules_apple//apple/internal/partials:swift_dylibs.bzl",
@@ -101,6 +101,7 @@ partials = struct(
     embedded_bundles_partial = _embedded_bundles_partial,
     extension_safe_validation_partial = _extension_safe_validation_partial,
     framework_import_partial = _framework_import_partial,
+    framework_header_modulemap_partial = _framework_header_modulemap_partial,
     framework_headers_partial = _framework_headers_partial,
     framework_provider_partial = _framework_provider_partial,
     macos_additional_contents_partial = _macos_additional_contents_partial,
@@ -108,7 +109,6 @@ partials = struct(
     provisioning_profile_partial = _provisioning_profile_partial,
     resources_partial = _resources_partial,
     settings_bundle_partial = _settings_bundle_partial,
-    static_framework_header_modulemap_partial = _static_framework_header_modulemap_partial,
     swift_dylibs_partial = _swift_dylibs_partial,
     watchos_stub_partial = _watchos_stub_partial,
 )

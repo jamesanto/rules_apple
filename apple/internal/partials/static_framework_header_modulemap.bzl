@@ -115,7 +115,7 @@ def _create_umbrella_header(actions, output, headers):
     content = "\n".join(import_lines) + "\n"
     actions.write(output = output, content = content)
 
-def _static_framework_header_modulemap_partial_impl(ctx, hdrs, umbrella_header, binary_objc_provider):
+def _framework_header_modulemap_partial_impl(ctx, hdrs, umbrella_header, binary_objc_provider):
     """Implementation for the static framework headers and modulemaps partial."""
     bundle_name = bundling_support.bundle_name(ctx)
 
@@ -170,10 +170,10 @@ def _static_framework_header_modulemap_partial_impl(ctx, hdrs, umbrella_header, 
         bundle_files = bundle_files,
     )
 
-def static_framework_header_modulemap_partial(hdrs, umbrella_header, binary_objc_provider):
-    """Constructor for the static framework headers and modulemaps partial.
+def framework_header_modulemap_partial(hdrs, umbrella_header, binary_objc_provider):
+    """Constructor for the framework headers and modulemaps partial.
 
-    This partial bundles the headers and modulemaps for static frameworks.
+    This partial bundles the headers and modulemaps for frameworks.
 
     Args:
       hdrs: The list of headers to bundle.
@@ -181,11 +181,11 @@ def static_framework_header_modulemap_partial(hdrs, umbrella_header, binary_objc
       binary_objc_provider: The ObjC provider for the binary target.
 
     Returns:
-      A partial that returns the bundle location of the static framework header and modulemap
+      A partial that returns the bundle location of the framework header and modulemap
       artifacts.
     """
     return partial.make(
-        _static_framework_header_modulemap_partial_impl,
+        _framework_header_modulemap_partial_impl,
         hdrs = hdrs,
         umbrella_header = umbrella_header,
         binary_objc_provider = binary_objc_provider,

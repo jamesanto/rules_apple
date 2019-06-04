@@ -177,7 +177,7 @@ def _ios_application_impl(ctx):
         binary_target[apple_common.AppleExecutableBinary],
     ] + processor_result.providers
 
-def _ios_framework_impl(ctx):
+def _ios_framework_impl_base(ctx, dynamic):
     """Experimental implementation of ios_framework."""
     # TODO(kaipi): Add support for packaging headers.
 
@@ -210,9 +210,13 @@ def _ios_framework_impl(ctx):
             embeddable_targets = ctx.attr.frameworks,
         ),
         partials.extension_safe_validation_partial(is_extension_safe = ctx.attr.extension_safe),
-        partials.framework_headers_partial(hdrs = ctx.files.hdrs),
+        None if dynamic else partials.framework_headers_partial(hdrs = ctx.files.hdrs),
         partials.framework_provider_partial(
             binary_provider = binary_target[apple_common.AppleDylibBinary],
+        ),
+        None if not dynamic else partials.framework_header_modulemap_partial(
+            hdrs = ctx.files.hdrs,
+            binary_objc_provider = binary_target[apple_common.Objc],
         ),
         partials.resources_partial(
             bundle_id = bundle_id,
@@ -226,12 +230,20 @@ def _ios_framework_impl(ctx):
         ),
     ]
 
+    processor_partials = [pp for pp in processor_partials if pp != None]
+
     processor_result = processor.process(ctx, processor_partials)
 
     return [
         DefaultInfo(files = processor_result.output_files),
         IosFrameworkBundleInfo(),
     ] + processor_result.providers
+
+def _ios_framework_impl(ctx):
+    return _ios_framework_impl_base(ctx=ctx, dynamic=False)
+
+def _ios_dynamic_framework_impl(ctx):
+    return _ios_framework_impl_base(ctx=ctx, dynamic=True)
 
 def _ios_extension_impl(ctx):
     """Experimental implementation of ios_extension."""
@@ -309,7 +321,7 @@ def _ios_static_framework_impl(ctx):
     processor_partials = [
         partials.apple_bundle_info_partial(),
         partials.binary_partial(binary_artifact = binary_artifact),
-        partials.static_framework_header_modulemap_partial(
+        partials.framework_header_modulemap_partial(
             hdrs = ctx.files.hdrs,
             umbrella_header = ctx.file.umbrella_header,
             binary_objc_provider = binary_target[apple_common.Objc],
@@ -524,6 +536,13 @@ ios_framework = rule_factory.create_apple_bundling_rule(
     platform_type = "ios",
     product_type = apple_product_type.framework,
     doc = "Builds and bundles an iOS Dynamic Framework.",
+)
+
+ios_dynamic_framework = rule_factory.create_apple_bundling_rule(
+    implementation = _ios_dynamic_framework_impl,
+    platform_type = "ios",
+    product_type = apple_product_type.framework,
+    doc = "Builds and bundles a distributable iOS Dynamic Framework.",
 )
 
 ios_static_framework = rule_factory.create_apple_bundling_rule(
