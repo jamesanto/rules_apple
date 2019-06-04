@@ -522,6 +522,15 @@ use only extension-safe APIs.
 If true, it will generate module map so that it can be distributed.
 """,
             ),
+            "umbrella_header": attr.label(
+                allow_single_file = [".h"],
+                doc = """
+An optional single .h file to use as the umbrella header for this framework. Usually, this header
+will have the same name as this target, so that clients can load the header using the #import
+<MyFramework/MyFramework.h> format. If this attribute is not specified (the common use case), an
+umbrella header will be generated under the same name as this target.
+""",
+            ),
         })
     elif rule_descriptor.product_type == apple_product_type.static_framework:
         attrs.append({

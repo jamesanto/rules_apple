@@ -217,6 +217,7 @@ def _ios_framework_impl(ctx):
         ),
         None if not distributable else partials.framework_header_modulemap_partial(
             hdrs = ctx.files.hdrs,
+            umbrella_header = ctx.file.umbrella_header,
             binary_objc_provider = binary_target[apple_common.Objc],
         ),
         partials.resources_partial(
